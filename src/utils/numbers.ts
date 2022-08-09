@@ -33,7 +33,7 @@ export type DecimalDefinitionFinite = {
   exponent: bigint;
 }
 
-export function definitionToString(definition: DecimalDefinition): string {
+export function stringifyDecimalDefinition(definition: DecimalDefinition): string {
   if (definition.nan) return `NaN`;
   if (!definition.finite) return definition.negative ? `-Infinity` : `Infinity`;
 

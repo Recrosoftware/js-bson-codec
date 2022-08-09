@@ -1,7 +1,7 @@
 import {Writer} from '../buffer.ts';
 import {BsonType} from '../constants.ts';
 import {BSONError} from '../error.ts';
-import * as ieee754 from '../ieee754.ts';
+import {encodeDecimal128, encodeDecimal64} from '../test/ieee754.ts';
 
 
 const zeroChecker = /\x00/;
@@ -166,16 +166,7 @@ export function writeFloat64(writer: Writer, value: number | bigint | Uint8Array
     return writer.write(value, index);
   }
 
-  if (typeof value === 'bigint') {
-    if (value < BigInt(Number.MIN_SAFE_INTEGER) || value > BigInt(Number.MAX_SAFE_INTEGER))
-      throw new Error(`Can't safely convert the given bigint '${value}' to a float64 value without loosing precision`);
-
-    value = Number(value);
-  }
-
-  ieee754.write(buf64, value, 0, true, 52, 64);
-
-  return writer.write(buf64, index);
+  return writer.write(encodeDecimal64(value, {littleEndian: true}), index);
 }
 
 export function writeFloat128(writer: Writer, value: number | bigint | Uint8Array, index?: number): number {
@@ -185,18 +176,8 @@ export function writeFloat128(writer: Writer, value: number | bigint | Uint8Arra
     if (value.length !== 16) throw new Error(`Invalid decimal128 binary length`);
     return writer.write(value);
   }
-  if (typeof value === 'bigint') {
-    if (value < BigInt(Number.MIN_SAFE_INTEGER) || value > BigInt(Number.MAX_SAFE_INTEGER))
-      throw new Error(`Can't safely convert the given bigint '${value}' to a decimal128 value without loosing precision`);
 
-    value = Number(value);
-  }
-
-  // TODO: Check if this library supports 128bit decimals
-  //   Maybe use: https://nbbeeken.github.io/d128-viewer/ (https://github.com/nbbeeken/d128-viewer/blob/main/src/d128.ts)
-  ieee754.write(buf128, value, 0, true, 112, 128);
-
-  return writer.write(buf128, index);
+  return writer.write(encodeDecimal128(value, {littleEndian: true}), index);
 }
 
 export function writeCString(writer: Writer, str: string, index?: number): number {
