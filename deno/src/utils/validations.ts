@@ -30,6 +30,7 @@ import {
   BsonSerializableString,
   BsonSerializableSymbol,
   BsonSerializableTimestamp,
+  BsonSerializableUndefined,
   BsonSerializableUtcDatetime,
   BsonSerializableValue
 } from '../constants.ts';
@@ -193,18 +194,6 @@ export function isBsonSerializableValue(input: unknown): input is Partial<BsonSe
     || isBsonSerializableMaxKey(input);
 }
 
-export function isBsonSerializableDouble(input: unknown): input is Partial<BsonSerializableDouble> {
-  return canBeABsonSerializableValue(input, 'double');
-}
-
-export function isBsonSerializableString(input: unknown): input is Partial<BsonSerializableString> {
-  return canBeABsonSerializableValue(input, 'string');
-}
-
-export function isBsonSerializableObject(input: unknown): input is Partial<BsonSerializableObject> {
-  return canBeABsonSerializableValue(input, 'object');
-}
-
 export function isBsonSerializableArray(input: unknown): input is Partial<BsonSerializableArray> {
   return canBeABsonSerializableValue(input, 'array');
 }
@@ -213,84 +202,78 @@ export function isBsonSerializableBinary(input: unknown): input is Partial<BsonS
   return canBeABsonSerializableValue(input, 'binary');
 }
 
-export function isBsonSerializableObjectId(input: unknown): input is Partial<BsonSerializableObjectId> {
-  return canBeABsonSerializableValue(input, 'object-id');
-}
-
 export function isBsonSerializableBoolean(input: unknown): input is Partial<BsonSerializableBoolean> {
   return canBeABsonSerializableValue(input, 'boolean');
-}
-
-export function isBsonSerializableUtcDatetime(input: unknown): input is Partial<BsonSerializableUtcDatetime> {
-  return canBeABsonSerializableValue(input, 'utc-datetime');
-}
-
-export function isBsonSerializableNull(input: unknown): input is Partial<BsonSerializableNull> {
-  return canBeABsonSerializableValue(input, 'null');
-}
-
-export function isBsonSerializableRegularExpression(input: unknown): input is Partial<BsonSerializableRegularExpression> {
-  return canBeABsonSerializableValue(input, 'reg-exp');
 }
 
 export function isBsonSerializableCode(input: unknown): input is Partial<BsonSerializableCode> {
   return canBeABsonSerializableValue(input, 'code');
 }
 
-export function isBsonSerializableSymbol(input: unknown): input is Partial<BsonSerializableSymbol> {
-  return canBeABsonSerializableValue(input, 'symbol');
-}
-
 export function isBsonSerializableCodeWithScope(input: unknown): input is Partial<BsonSerializableCodeWithScope> {
   return canBeABsonSerializableValue(input, 'code-with-scope');
-}
-
-export function isBsonSerializableInt32(input: unknown): input is Partial<BsonSerializableInt32> {
-  return canBeABsonSerializableValue(input, 'int32');
-}
-
-export function isBsonSerializableTimestamp(input: unknown): input is Partial<BsonSerializableTimestamp> {
-  return canBeABsonSerializableValue(input, 'timestamp');
-}
-
-export function isBsonSerializableInt64(input: unknown): input is Partial<BsonSerializableInt64> {
-  return canBeABsonSerializableValue(input, 'int64');
 }
 
 export function isBsonSerializableDecimal128(input: unknown): input is Partial<BsonSerializableDecimal128> {
   return canBeABsonSerializableValue(input, 'decimal128');
 }
 
-export function isBsonSerializableMinKey(input: unknown): input is Partial<BsonSerializableMinKey> {
-  return canBeABsonSerializableValue(input, 'min-key');
+export function isBsonSerializableDouble(input: unknown): input is Partial<BsonSerializableDouble> {
+  return canBeABsonSerializableValue(input, 'double');
+}
+
+export function isBsonSerializableInt32(input: unknown): input is Partial<BsonSerializableInt32> {
+  return canBeABsonSerializableValue(input, 'int32');
+}
+
+export function isBsonSerializableInt64(input: unknown): input is Partial<BsonSerializableInt64> {
+  return canBeABsonSerializableValue(input, 'int64');
 }
 
 export function isBsonSerializableMaxKey(input: unknown): input is Partial<BsonSerializableMaxKey> {
   return canBeABsonSerializableValue(input, 'max-key');
 }
 
-
-export function isValidBsonSerializableDouble(input: Partial<BsonSerializableDouble>): input is BsonSerializableDouble {
-  if (!isBsonSerializableDouble(input) || !isSerializableNumericType(input)) return false;
-
-  const number = input[1]!;
-
-  return isBinarySequence(number)
-    ? getLength(number) === 8
-    : isValidDecimal64(number);
+export function isBsonSerializableMinKey(input: unknown): input is Partial<BsonSerializableMinKey> {
+  return canBeABsonSerializableValue(input, 'min-key');
 }
 
-export function isValidBsonSerializableString(input: Partial<BsonSerializableString>): input is BsonSerializableString {
-  return isBsonSerializableString(input)
-    && input.length === 2
-    && typeof input[1] === 'string';
+export function isBsonSerializableNull(input: unknown): input is Partial<BsonSerializableNull> {
+  return canBeABsonSerializableValue(input, 'null');
 }
 
-export function isValidBsonSerializableObject(input: Partial<BsonSerializableObject>): input is BsonSerializableObject {
-  return isBsonSerializableObject(input)
-    && input.length === 2
-    && isBsonObject(input[1]);
+export function isBsonSerializableObject(input: unknown): input is Partial<BsonSerializableObject> {
+  return canBeABsonSerializableValue(input, 'object');
 }
+
+export function isBsonSerializableObjectId(input: unknown): input is Partial<BsonSerializableObjectId> {
+  return canBeABsonSerializableValue(input, 'object-id');
+}
+
+export function isBsonSerializableRegularExpression(input: unknown): input is Partial<BsonSerializableRegularExpression> {
+  return canBeABsonSerializableValue(input, 'reg-exp');
+}
+
+export function isBsonSerializableString(input: unknown): input is Partial<BsonSerializableString> {
+  return canBeABsonSerializableValue(input, 'string');
+}
+
+export function isBsonSerializableSymbol(input: unknown): input is Partial<BsonSerializableSymbol> {
+  return canBeABsonSerializableValue(input, 'symbol');
+}
+
+export function isBsonSerializableTimestamp(input: unknown): input is Partial<BsonSerializableTimestamp> {
+  return canBeABsonSerializableValue(input, 'timestamp');
+}
+
+export function isBsonSerializableUndefined(input: unknown): input is Partial<BsonSerializableUndefined> {
+  return canBeABsonSerializableValue(input, 'undefined');
+}
+
+export function isBsonSerializableUtcDatetime(input: unknown): input is Partial<BsonSerializableUtcDatetime> {
+  return canBeABsonSerializableValue(input, 'utc-datetime');
+}
+
 
 export function isValidBsonSerializableArray(input: Partial<BsonSerializableArray>): input is BsonSerializableArray {
   return isBsonSerializableArray(input)
@@ -305,21 +288,57 @@ export function isValidBsonSerializableBinary(input: Partial<BsonSerializableBin
     && isBinarySequence(input[2]);
 }
 
-export function isValidBsonSerializableObjectId(input: Partial<BsonSerializableObjectId>): input is BsonSerializableObjectId {
-  return isBsonSerializableObjectId(input)
-    && input.length === 2
-    && isBinarySequence(input[1])
-    && getLength(input[1]) === 12;
-}
-
 export function isValidBsonSerializableBoolean(input: Partial<BsonSerializableBoolean>): input is BsonSerializableBoolean {
   return isBsonSerializableBoolean(input)
     && input.length === 2
     && typeof input[1] === 'boolean';
 }
 
-export function isValidBsonSerializableUtcDatetime(input: Partial<BsonSerializableUtcDatetime>): input is BsonSerializableUtcDatetime {
-  if (!isBsonSerializableUtcDatetime(input) || !isSerializableNumericType(input)) return false;
+export function isValidBsonSerializableCode(input: Partial<BsonSerializableCode>): input is BsonSerializableCode {
+  return isBsonSerializableCode(input)
+    && input.length === 2
+    && typeof input[1] === 'string';
+}
+
+export function isValidBsonSerializableCodeWithScope(input: Partial<BsonSerializableCodeWithScope>): input is BsonSerializableCodeWithScope {
+  return isBsonSerializableCodeWithScope(input)
+    && input.length === 3
+    && typeof input[1] === 'string'
+    && isBsonObject(input[2]);
+}
+
+export function isValidBsonSerializableDecimal128(input: Partial<BsonSerializableDecimal128>): input is BsonSerializableDecimal128 {
+  if (!isBsonSerializableDecimal128(input) || !isSerializableNumericType(input)) return false;
+
+  const number = input[1]!;
+
+  return isBinarySequence(number)
+    ? getLength(number) === 16
+    : isValidDecimal128(number);
+}
+
+export function isValidBsonSerializableDouble(input: Partial<BsonSerializableDouble>): input is BsonSerializableDouble {
+  if (!isBsonSerializableDouble(input) || !isSerializableNumericType(input)) return false;
+
+  const number = input[1]!;
+
+  return isBinarySequence(number)
+    ? getLength(number) === 8
+    : isValidDecimal64(number);
+}
+
+export function isValidBsonSerializableInt32(input: Partial<BsonSerializableInt32>): input is BsonSerializableInt32 {
+  if (!isBsonSerializableInt32(input) || !isSerializableNumericType(input)) return false;
+
+  const number = input[1]!;
+
+  return isBinarySequence(number)
+    ? getLength(number) === 4
+    : isValidInt32(number);
+}
+
+export function isValidBsonSerializableInt64(input: Partial<BsonSerializableInt64>): input is BsonSerializableInt64 {
+  if (!isBsonSerializableInt64(input) || !isSerializableNumericType(input)) return false;
 
   const number = input[1]!;
 
@@ -328,9 +347,32 @@ export function isValidBsonSerializableUtcDatetime(input: Partial<BsonSerializab
     : isValidInt64(number);
 }
 
+export function isValidBsonSerializableMaxKey(input: Partial<BsonSerializableMaxKey>): input is BsonSerializableMaxKey {
+  return isBsonSerializableMaxKey(input)
+    && input.length === 1;
+}
+
+export function isValidBsonSerializableMinKey(input: Partial<BsonSerializableMinKey>): input is BsonSerializableMinKey {
+  return isBsonSerializableMinKey(input)
+    && input.length === 1;
+}
+
 export function isValidBsonSerializableNull(input: Partial<BsonSerializableNull>): input is BsonSerializableNull {
   return isBsonSerializableNull(input)
     && input.length === 1;
+}
+
+export function isValidBsonSerializableObject(input: Partial<BsonSerializableObject>): input is BsonSerializableObject {
+  return isBsonSerializableObject(input)
+    && input.length === 2
+    && isBsonObject(input[1]);
+}
+
+export function isValidBsonSerializableObjectId(input: Partial<BsonSerializableObjectId>): input is BsonSerializableObjectId {
+  return isBsonSerializableObjectId(input)
+    && input.length === 2
+    && isBinarySequence(input[1])
+    && getLength(input[1]) === 12;
 }
 
 export function isValidBsonSerializableRegularExpression(input: Partial<BsonSerializableRegularExpression>): input is BsonSerializableRegularExpression {
@@ -359,8 +401,8 @@ export function isValidBsonSerializableRegularExpression(input: Partial<BsonSeri
     && !REGEXP_FLAGS_CHECK.test(flags);
 }
 
-export function isValidBsonSerializableCode(input: Partial<BsonSerializableCode>): input is BsonSerializableCode {
-  return isBsonSerializableCode(input)
+export function isValidBsonSerializableString(input: Partial<BsonSerializableString>): input is BsonSerializableString {
+  return isBsonSerializableString(input)
     && input.length === 2
     && typeof input[1] === 'string';
 }
@@ -369,23 +411,6 @@ export function isValidBsonSerializableSymbol(input: Partial<BsonSerializableSym
   return isBsonSerializableSymbol(input)
     && input.length === 2
     && typeof input[1] === 'string';
-}
-
-export function isValidBsonSerializableCodeWithScope(input: Partial<BsonSerializableCodeWithScope>): input is BsonSerializableCodeWithScope {
-  return isBsonSerializableCodeWithScope(input)
-    && input.length === 3
-    && typeof input[1] === 'string'
-    && isBsonObject(input[2]);
-}
-
-export function isValidBsonSerializableInt32(input: Partial<BsonSerializableInt32>): input is BsonSerializableInt32 {
-  if (!isBsonSerializableInt32(input) || !isSerializableNumericType(input)) return false;
-
-  const number = input[1]!;
-
-  return isBinarySequence(number)
-    ? getLength(number) === 4
-    : isValidInt32(number);
 }
 
 export function isValidBsonSerializableTimestamp(input: Partial<BsonSerializableTimestamp>): input is BsonSerializableTimestamp {
@@ -398,32 +423,17 @@ export function isValidBsonSerializableTimestamp(input: Partial<BsonSerializable
     : isValidUInt64(number);
 }
 
-export function isValidBsonSerializableInt64(input: Partial<BsonSerializableInt64>): input is BsonSerializableInt64 {
-  if (!isBsonSerializableInt64(input) || !isSerializableNumericType(input)) return false;
+export function isValidBsonSerializableUndefined(input: Partial<BsonSerializableUndefined>): input is BsonSerializableUndefined {
+  return isBsonSerializableUndefined(input)
+    && input.length === 1;
+}
+
+export function isValidBsonSerializableUtcDatetime(input: Partial<BsonSerializableUtcDatetime>): input is BsonSerializableUtcDatetime {
+  if (!isBsonSerializableUtcDatetime(input) || !isSerializableNumericType(input)) return false;
 
   const number = input[1]!;
 
   return isBinarySequence(number)
     ? getLength(number) === 8
     : isValidInt64(number);
-}
-
-export function isValidBsonSerializableDecimal128(input: Partial<BsonSerializableDecimal128>): input is BsonSerializableDecimal128 {
-  if (!isBsonSerializableDecimal128(input) || !isSerializableNumericType(input)) return false;
-
-  const number = input[1]!;
-
-  return isBinarySequence(number)
-    ? getLength(number) === 16
-    : isValidDecimal128(number);
-}
-
-export function isValidBsonSerializableMinKey(input: Partial<BsonSerializableMinKey>): input is BsonSerializableMinKey {
-  return isBsonSerializableMinKey(input)
-    && input.length === 1;
-}
-
-export function isValidBsonSerializableMaxKey(input: Partial<BsonSerializableMaxKey>): input is BsonSerializableMaxKey {
-  return isBsonSerializableMaxKey(input)
-    && input.length === 1;
 }

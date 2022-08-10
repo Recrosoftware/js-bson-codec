@@ -3,9 +3,9 @@ const EXPONENT_MIN = -6176n;
 const EXPONENT_BIAS = 6176n;
 const MAX_DIGITS = 34;
 
-const PARSE_STRING_REGEXP = /^(\+|-)?(\d+|(\d*\.\d*))?(E|e)?([-+])?(\d+)?$/;
-const PARSE_INF_REGEXP = /^(\+|-)?(Infinity|inf)$/i;
-const PARSE_NAN_REGEXP = /^(\+|-)?NaN$/i;
+const PARSE_STRING_REGEXP = /^([-+])?(\d+|(\d*\.\d*))?([Ee])?([-+])?(\d+)?$/;
+const PARSE_INF_REGEXP = /^([-+])?(Infinity|inf)$/i;
+const PARSE_NAN_REGEXP = /^([-+])?NaN$/i;
 const EXPONENT_REGEX = /^([-+])?(\d+)?$/;
 
 // Nan value bits as 32 bit values (due to lack of longs)

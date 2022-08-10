@@ -6,8 +6,10 @@ export function isBinarySequence(input: unknown): input is BinarySequence {
 }
 
 export function isIndexedBinarySequence(input: unknown): input is IndexedBinarySequence {
-  // TODO: Check array value better (check if is a number array of integers between 0x00 and 0xFF)
-  return input instanceof Uint8Array || Array.isArray(input);
+  return input instanceof Uint8Array || (
+    Array.isArray(input) &&
+    input.every(i => typeof i === 'number' && i >= 0x00 && i <= 0xFF && Number.isInteger(i))
+  );
 }
 
 export function asIndexedBinarySequence(input: BinarySequence): IndexedBinarySequence {

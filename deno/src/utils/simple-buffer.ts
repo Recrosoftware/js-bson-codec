@@ -1,9 +1,12 @@
+import {asIndexedBinarySequence, BinarySequence, getLength, isBinarySequence} from './binary-sequence.ts';
+
+
 export interface Writer {
   position: number;
 
   seek(amount: number): void;
 
-  write(buffer: Uint8Array, index?: number): number;
+  write(buffer: BinarySequence, index?: number): number;
 }
 
 export const SIMPLE_BUFFER_MIN = 16;
@@ -52,10 +55,12 @@ export class SimpleBuffer implements Writer {
     this.#growBufferSize = growBufferSize;
   }
 
-  public getBuffer() {
+  public getBuffer(copy = false) {
     this.#ensureFit(this.#position);
 
-    return this.#buffer.subarray(0, this.#position);
+    return copy
+      ? this.#buffer.slice(0, this.#position)
+      : this.#buffer.subarray(0, this.#position);
   }
 
   public seek(amount: number): void {
@@ -67,23 +72,28 @@ export class SimpleBuffer implements Writer {
     this.#position = newPosition;
   }
 
-  public write(buffer: Uint8Array, index: number = this.#position): number {
-    if (!(buffer instanceof Uint8Array)) throw new Error(`Parameter 'buffer' must be of type Uint8Array`);
+  public write(buffer: BinarySequence, index: number = this.#position): number {
+    if (!isBinarySequence(buffer)) throw new Error(`Parameter 'buffer' must be a BinarySequence`);
     if (!Number.isInteger(index)) throw new Error(`Parameter 'index' must be an integer`);
 
+    let offset = 0;
+
     if (index < 0) {
-      if (buffer.length <= -index) return 0;
-      buffer = buffer.subarray(-index);
+      if (getLength(buffer) <= -index) return 0;
+
+      offset = -index;
       index = 0;
     }
-    if (buffer.length === 0) return 0;
 
-    this.#ensureFit(index + buffer.length);
+    const bufferLength = getLength(buffer) - offset;
+    if (bufferLength > 0) return 0;
 
-    this.#buffer.set(buffer, index);
-    this.#position = Math.max(this.#position, index + buffer.length);
+    this.#ensureFit(index + bufferLength);
 
-    return buffer.length;
+    this.#buffer.set(asIndexedBinarySequence(buffer), index);
+    this.#position = Math.max(this.#position, index + bufferLength);
+
+    return bufferLength;
   }
 
   #ensureFit(endIndex: number): void {

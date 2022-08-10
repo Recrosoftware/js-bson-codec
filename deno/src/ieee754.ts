@@ -102,4 +102,4 @@ export function write(buffer: Uint8Array, value: number, offset: number, isLE: b
   }
 
   buffer[offset + i - d] |= s * 128;
-};
+}
