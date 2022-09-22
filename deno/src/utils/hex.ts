@@ -15,11 +15,9 @@ export function hexToBuffer(hex: string): Uint8Array {
 }
 
 export function bufferToHex(buf: Uint8Array) {
-  let hex = '';
+  let hex = "";
   for (let i = 0; i < buf.length; ++i) {
-    hex += buf[i] < 0x10
-      ? ('0' + buf[i].toString(16))
-      : buf[i].toString(16);
+    hex += buf[i] < 0x10 ? ("0" + buf[i].toString(16)) : buf[i].toString(16);
   }
   return hex;
 }

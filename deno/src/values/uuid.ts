@@ -1,18 +1,21 @@
-import {BINARY_SUBTYPE_UUID, BsonSerializableBinary, TO_BSON_SERIALIZABLE_VALUE} from '../constants.ts';
-import {BSONTypeError} from '../error.ts';
-import {bufferToAscii} from '../utils/ascii.ts';
-import {bufferToBase64} from '../utils/base64.ts';
-import {BinarySequence, sameContent} from '../utils/binary-sequence.ts';
+import {
+  BINARY_SUBTYPE_UUID,
+  BsonSerializableBinary,
+  TO_BSON_SERIALIZABLE_VALUE,
+} from "../constants.ts";
+import { BSONTypeError } from "../error.ts";
+import { bufferToAscii } from "../utils/ascii.ts";
+import { bufferToBase64 } from "../utils/base64.ts";
+import { BinarySequence, sameContent } from "../utils/binary-sequence.ts";
 import {
   bufferToUuidHex,
   isValidUuid,
   isValidUuidBuffer,
   isValidUuidString,
   UUID_BYTE_LENGTH,
-  uuidHexToBuffer
-} from '../utils/uuid.ts';
-import {Binary} from './binary.ts';
-
+  uuidHexToBuffer,
+} from "../utils/uuid.ts";
+import { Binary } from "./binary.ts";
 
 /**
  * A class representation of the BSON UUID type.
@@ -37,7 +40,9 @@ export class UUID {
     } else if (isValidUuidString(input)) {
       this.#uuid = uuidHexToBuffer(input);
     } else {
-      throw new BSONTypeError('Argument passed in UUID constructor must be a UUID, a 16 bytes BinarySequence or a 32/36 character hex string (dashes excluded/included, format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).');
+      throw new BSONTypeError(
+        "Argument passed in UUID constructor must be a UUID, a 16 bytes BinarySequence or a 32/36 character hex string (dashes excluded/included, format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).",
+      );
     }
 
     if (UUID.cacheHexString) this.#uuid_hex = bufferToUuidHex(this.#uuid);
@@ -51,7 +56,11 @@ export class UUID {
     if (value instanceof UUID) this.#uuid = value.#uuid;
     else if (isValidUuidString(value)) this.#uuid = uuidHexToBuffer(value);
     else if (isValidUuidBuffer(value)) this.#uuid = new Uint8Array(value);
-    else throw new BSONTypeError('Argument passed in UUID constructor must be a UUID, a 16 bytes BinarySequence or a 32/36 character hex string (dashes excluded/included, format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).');
+    else {
+      throw new BSONTypeError(
+        "Argument passed in UUID constructor must be a UUID, a 16 bytes BinarySequence or a 32/36 character hex string (dashes excluded/included, format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).",
+      );
+    }
 
     if (UUID.cacheHexString) this.#uuid_hex = bufferToUuidHex(this.#uuid);
   }
@@ -62,7 +71,7 @@ export class UUID {
 
   /**
    * Returns the UUID id as a 32 or 36 character hex string representation, excluding/including dashes (defaults to 36 character dash separated)
-   * */
+   */
   toHexString(): string {
     if (UUID.cacheHexString && this.#uuid_hex) return this.#uuid_hex;
 
@@ -76,9 +85,9 @@ export class UUID {
   /**
    * Converts the id into a 36 character (dashes included) hex string, unless a encoding is specified.
    */
-  toString(encoding: 'base64' | 'ascii' | 'hex' = 'hex'): string {
-    if (encoding === 'base64') return bufferToBase64(this.#uuid);
-    if (encoding === 'ascii') return bufferToAscii(this.#uuid);
+  toString(encoding: "base64" | "ascii" | "hex" = "hex"): string {
+    if (encoding === "base64") return bufferToBase64(this.#uuid);
+    if (encoding === "ascii") return bufferToAscii(this.#uuid);
     return this.toHexString();
   }
 
@@ -106,7 +115,7 @@ export class UUID {
   }
 
   [TO_BSON_SERIALIZABLE_VALUE](): BsonSerializableBinary {
-    return ['binary', BINARY_SUBTYPE_UUID, this.#uuid];
+    return ["binary", BINARY_SUBTYPE_UUID, this.#uuid];
   }
 
   /**

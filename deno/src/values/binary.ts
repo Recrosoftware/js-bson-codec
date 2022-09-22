@@ -3,15 +3,19 @@ import {
   BINARY_SUBTYPE_UUID,
   BsonBinarySubtype,
   BsonSerializableBinary,
-  TO_BSON_SERIALIZABLE_VALUE
-} from '../constants.ts';
-import {BSONError, BSONTypeError} from '../error.ts';
-import {asciiToBuffer, bufferToAscii} from '../utils/ascii.ts';
-import {bufferToBase64} from '../utils/base64.ts';
-import {asIndexedBinarySequence, BinarySequence, getLength, isBinarySequence} from '../utils/binary-sequence.ts';
-import {isBsonBinarySubType} from '../utils/validations.ts';
-import {UUID} from './uuid.ts';
-
+  TO_BSON_SERIALIZABLE_VALUE,
+} from "../constants.ts";
+import { BSONError, BSONTypeError } from "../error.ts";
+import { asciiToBuffer, bufferToAscii } from "../utils/ascii.ts";
+import { bufferToBase64 } from "../utils/base64.ts";
+import {
+  asIndexedBinarySequence,
+  BinarySequence,
+  getLength,
+  isBinarySequence,
+} from "../utils/binary-sequence.ts";
+import { isBsonBinarySubType } from "../utils/validations.ts";
+import { UUID } from "./uuid.ts";
 
 const BINARY_BUFFER_SIZE = 256;
 
@@ -36,22 +40,27 @@ export class Binary {
    * @param buffer - a buffer object containing the binary data.
    * @param subType - the option binary type.
    */
-  constructor(buffer?: string | BinarySequence,
-              subType: BsonBinarySubtype = BINARY_SUBTYPE_GENERIC) {
-
-    if (!isBsonBinarySubType(subType)) throw new BSONTypeError(`Invalid BsonBinarySubtype '${subType}'`);
+  constructor(
+    buffer?: string | BinarySequence,
+    subType: BsonBinarySubtype = BINARY_SUBTYPE_GENERIC,
+  ) {
+    if (!isBsonBinarySubType(subType)) {
+      throw new BSONTypeError(`Invalid BsonBinarySubtype '${subType}'`);
+    }
     this.subType = subType;
 
     if (buffer == null) {
       this.buffer = new Uint8Array(Binary.BUFFER_SIZE);
       this.position = 0;
     } else {
-      if (typeof buffer === 'string') {
+      if (typeof buffer === "string") {
         this.buffer = asciiToBuffer(buffer);
       } else if (isBinarySequence(buffer)) {
         this.buffer = new Uint8Array(buffer);
       } else {
-        throw new BSONTypeError('Binary can only be constructed from string, Uint8Array, ArrayBuffer or number[]');
+        throw new BSONTypeError(
+          "Binary can only be constructed from string, Uint8Array, ArrayBuffer or number[]",
+        );
       }
 
       this.position = this.buffer.length;
@@ -65,23 +74,31 @@ export class Binary {
    */
   put(byteValue: string | number | BinarySequence): void {
     // If it's a string and a has more than one character throw an error
-    if (typeof byteValue === 'string' && byteValue.length !== 1) {
-      throw new BSONTypeError('only accepts single character String');
-    } else if (typeof byteValue !== 'number' && getLength(byteValue as BinarySequence) !== 1)
-      throw new BSONTypeError('only accepts single elements BinarySequence');
+    if (typeof byteValue === "string" && byteValue.length !== 1) {
+      throw new BSONTypeError("only accepts single character String");
+    } else if (
+      typeof byteValue !== "number" &&
+      getLength(byteValue as BinarySequence) !== 1
+    ) {
+      throw new BSONTypeError("only accepts single elements BinarySequence");
+    }
 
     // Decode the byte value once
     let decodedByte: number;
-    if (typeof byteValue === 'string') {
+    if (typeof byteValue === "string") {
       decodedByte = byteValue.charCodeAt(0);
-    } else if (typeof byteValue === 'number') {
+    } else if (typeof byteValue === "number") {
       decodedByte = byteValue;
     } else {
       decodedByte = asIndexedBinarySequence(byteValue)[0];
     }
 
-    if (!Number.isInteger(decodedByte) || decodedByte < 0 || decodedByte > 255) {
-      throw new BSONTypeError('only accepts integer number in a valid unsigned byte range 0-255');
+    if (
+      !Number.isInteger(decodedByte) || decodedByte < 0 || decodedByte > 255
+    ) {
+      throw new BSONTypeError(
+        "only accepts integer number in a valid unsigned byte range 0-255",
+      );
     }
 
     if (this.buffer.length > this.position) {
@@ -101,10 +118,11 @@ export class Binary {
    * @param sequence - a string or buffer to be written to the Binary BSON object.
    * @param offset - specify the binary of where to write the content.
    */
-  write(sequence: string | BinarySequence,
-        offset: number = this.position): void {
-
-    if (typeof sequence === 'string') sequence = asciiToBuffer(sequence);
+  write(
+    sequence: string | BinarySequence,
+    offset: number = this.position,
+  ): void {
+    if (typeof sequence === "string") sequence = asciiToBuffer(sequence);
     if (sequence instanceof ArrayBuffer) sequence = new Uint8Array(sequence);
 
     const buf = sequence as Uint8Array | number[];
@@ -153,8 +171,8 @@ export class Binary {
     return this.position;
   }
 
-  toString(format: 'base64' | 'ascii' = 'base64'): string {
-    return format === 'ascii'
+  toString(format: "base64" | "ascii" = "base64"): string {
+    return format === "ascii"
       ? bufferToAscii(this.buffer)
       : bufferToBase64(this.buffer);
   }
@@ -162,7 +180,7 @@ export class Binary {
   toUUID(): UUID {
     if (this.subType !== BINARY_SUBTYPE_UUID) {
       throw new BSONError(
-        `Binary sub_type "${this.subType}" is not supported for converting to UUID. Only "${BINARY_SUBTYPE_UUID}" is currently supported.`
+        `Binary sub_type "${this.subType}" is not supported for converting to UUID. Only "${BINARY_SUBTYPE_UUID}" is currently supported.`,
       );
     }
 
@@ -170,6 +188,6 @@ export class Binary {
   }
 
   [TO_BSON_SERIALIZABLE_VALUE](): BsonSerializableBinary {
-    return ['binary', this.subType, this.buffer];
+    return ["binary", this.subType, this.buffer];
   }
 }

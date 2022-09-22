@@ -1,5 +1,9 @@
-import {asIndexedBinarySequence, BinarySequence, getLength, isBinarySequence} from './binary-sequence.ts';
-
+import {
+  asIndexedBinarySequence,
+  BinarySequence,
+  getLength,
+  isBinarySequence,
+} from "./binary-sequence.ts";
 
 export interface Writer {
   position: number;
@@ -32,8 +36,12 @@ export class SimpleBufferWriter implements Writer {
   }
 
   set position(position: number) {
-    if (!Number.isInteger(position)) throw new Error(`Parameter must be an integer`);
-    if (position < 0) throw new Error(`Cannot seek before the beginning of the buffer`);
+    if (!Number.isInteger(position)) {
+      throw new Error(`Parameter must be an integer`);
+    }
+    if (position < 0) {
+      throw new Error(`Cannot seek before the beginning of the buffer`);
+    }
 
     this.#position = position;
   }
@@ -43,7 +51,9 @@ export class SimpleBufferWriter implements Writer {
   }
 
   set growBufferSize(value: number) {
-    if (!Number.isInteger(value)) throw new Error(`Parameter must be an integer`);
+    if (!Number.isInteger(value)) {
+      throw new Error(`Parameter must be an integer`);
+    }
     if (value < SIMPLE_BUFFER_MIN) value = SIMPLE_BUFFER_MIN;
 
     this.#growBufferSize = value;
@@ -54,11 +64,16 @@ export class SimpleBufferWriter implements Writer {
   #position: number;
   #growBufferSize: number;
 
-  constructor(initialSize: number = SIMPLE_BUFFER_INITIAL_SIZE,
-              growBufferSize: number = SIMPLE_BUFFER_INITIAL_SIZE) {
-
-    if (!Number.isInteger(initialSize)) throw new Error(`Parameter 'initialSize' must be an integer`);
-    if (!Number.isInteger(growBufferSize)) throw new Error(`Parameter 'growBufferSize' must be an integer`);
+  constructor(
+    initialSize: number = SIMPLE_BUFFER_INITIAL_SIZE,
+    growBufferSize: number = SIMPLE_BUFFER_INITIAL_SIZE,
+  ) {
+    if (!Number.isInteger(initialSize)) {
+      throw new Error(`Parameter 'initialSize' must be an integer`);
+    }
+    if (!Number.isInteger(growBufferSize)) {
+      throw new Error(`Parameter 'growBufferSize' must be an integer`);
+    }
 
     if (initialSize < SIMPLE_BUFFER_MIN) initialSize = SIMPLE_BUFFER_MIN;
     if (growBufferSize < SIMPLE_BUFFER_MIN) growBufferSize = SIMPLE_BUFFER_MIN;
@@ -78,17 +93,25 @@ export class SimpleBufferWriter implements Writer {
   }
 
   public seek(amount: number): void {
-    if (!Number.isInteger(amount)) throw new Error(`Parameter 'amount' must be an integer`);
+    if (!Number.isInteger(amount)) {
+      throw new Error(`Parameter 'amount' must be an integer`);
+    }
 
     const newPosition = this.#position + amount;
-    if (newPosition < 0) throw new Error(`Cannot seek before the beginning of the buffer`);
+    if (newPosition < 0) {
+      throw new Error(`Cannot seek before the beginning of the buffer`);
+    }
 
     this.#position = newPosition;
   }
 
   public write(buffer: BinarySequence, index: number = this.#position): number {
-    if (!isBinarySequence(buffer)) throw new Error(`Parameter 'buffer' must be a BinarySequence`);
-    if (!Number.isInteger(index)) throw new Error(`Parameter 'index' must be an integer`);
+    if (!isBinarySequence(buffer)) {
+      throw new Error(`Parameter 'buffer' must be a BinarySequence`);
+    }
+    if (!Number.isInteger(index)) {
+      throw new Error(`Parameter 'index' must be an integer`);
+    }
 
     let offset = 0;
 
@@ -128,31 +151,40 @@ export class SimpleBufferReader implements Reader {
   }
 
   set position(position: number) {
-    if (!Number.isInteger(position)) throw new Error(`Parameter must be an integer`);
-    if (position < 0) throw new Error(`Cannot seek before the beginning of the buffer`);
+    if (!Number.isInteger(position)) {
+      throw new Error(`Parameter must be an integer`);
+    }
+    if (position < 0) {
+      throw new Error(`Cannot seek before the beginning of the buffer`);
+    }
 
     this.#position = position;
   }
 
-  #view: DataView;
   #buffer: Uint8Array;
   #position: number;
 
   constructor(buffer: Uint8Array) {
-    if (!(buffer instanceof Uint8Array)) throw new Error(`Parameter 'buffer' must be a Uint8Array`);
+    if (!(buffer instanceof Uint8Array)) {
+      throw new Error(`Parameter 'buffer' must be a Uint8Array`);
+    }
 
-    this.#view = new DataView(buffer);
     this.#buffer = buffer;
-
     this.#position = 0;
   }
 
   public seek(amount: number): void {
-    if (!Number.isInteger(amount)) throw new Error(`Parameter 'amount' must be an integer`);
+    if (!Number.isInteger(amount)) {
+      throw new Error(`Parameter 'amount' must be an integer`);
+    }
 
     const newPosition = this.#position + amount;
-    if (newPosition < 0) throw new Error(`Cannot seek before the beginning of the buffer`);
-    if (newPosition > this.#buffer.length) throw new Error(`Cannot seek after the end of the buffer`);
+    if (newPosition < 0) {
+      throw new Error(`Cannot seek before the beginning of the buffer`);
+    }
+    if (newPosition > this.#buffer.length) {
+      throw new Error(`Cannot seek after the end of the buffer`);
+    }
 
     this.#position = newPosition;
   }
@@ -162,9 +194,13 @@ export class SimpleBufferReader implements Reader {
   }
 
   public read(bytes: number, noSeek?: boolean): Uint8Array {
-    if (!Number.isInteger(bytes)) throw new Error(`Parameter 'bytes' must be an integer`);
+    if (!Number.isInteger(bytes)) {
+      throw new Error(`Parameter 'bytes' must be an integer`);
+    }
     if (bytes < 0) throw new Error(`Parameter 'bytes' cannot be negative`);
-    if (this.position + bytes > this.#buffer.length) throw new Error(`Read request would exceed the buffer size`);
+    if (this.position + bytes > this.#buffer.length) {
+      throw new Error(`Read request would exceed the buffer size`);
+    }
 
     try {
       return this.#buffer.subarray(this.position, this.position + bytes);
@@ -173,7 +209,10 @@ export class SimpleBufferReader implements Reader {
     }
   }
 
-  public readUntil(readNext: (byte: number) => boolean, noSeek?: boolean): Uint8Array {
+  public readUntil(
+    readNext: (byte: number) => boolean,
+    noSeek?: boolean,
+  ): Uint8Array {
     let offset = this.position;
 
     while (offset < this.#buffer.length) {
@@ -181,7 +220,9 @@ export class SimpleBufferReader implements Reader {
       offset++;
     }
 
-    if (offset === this.#buffer.length) throw new Error('End of stream reached');
+    if (offset === this.#buffer.length) {
+      throw new Error("End of stream reached");
+    }
 
     try {
       return this.#buffer.subarray(this.position, offset);

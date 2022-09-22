@@ -1,6 +1,10 @@
-import {asIndexedBinarySequence, BinarySequence, getLength, isBinarySequence} from './binary-sequence.ts';
-import {bufferToHex, hexToBuffer} from './hex.ts';
-
+import {
+  asIndexedBinarySequence,
+  BinarySequence,
+  getLength,
+  isBinarySequence,
+} from "./binary-sequence.ts";
+import { bufferToHex, hexToBuffer } from "./hex.ts";
 
 export const UUID_BYTE_LENGTH = 16;
 export const UUID_REGEXP =
@@ -9,7 +13,7 @@ export const UUID_REGEXP =
 export function uuidHexToBuffer(uuid: string): Uint8Array {
   if (!isValidUuid(uuid)) throw new Error(`Invalid uuid string: '${uuid}'`);
 
-  return hexToBuffer(uuid.replaceAll('-', ''));
+  return hexToBuffer(uuid.replaceAll("-", ""));
 }
 
 export function bufferToUuidHex(buf: Uint8Array, includeDashes = true): string {
@@ -20,10 +24,10 @@ export function bufferToUuidHex(buf: Uint8Array, includeDashes = true): string {
     bufferToHex(buf.subarray(4, 6)),
     bufferToHex(buf.subarray(6, 8)),
     bufferToHex(buf.subarray(8, 10)),
-    bufferToHex(buf.subarray(10, 16))
+    bufferToHex(buf.subarray(10, 16)),
   ];
 
-  return parts.join(includeDashes ? '-' : '');
+  return parts.join(includeDashes ? "-" : "");
 }
 
 export function isValidUuid(uuid: unknown): uuid is string | BinarySequence {
@@ -31,7 +35,7 @@ export function isValidUuid(uuid: unknown): uuid is string | BinarySequence {
 }
 
 export function isValidUuidString(uuid: unknown): uuid is string {
-  return typeof uuid === 'string' && UUID_REGEXP.test(uuid);
+  return typeof uuid === "string" && UUID_REGEXP.test(uuid);
 }
 
 export function isValidUuidBuffer(uuid: unknown): uuid is BinarySequence {

@@ -1,5 +1,7 @@
-import {BsonSerializableDouble, TO_BSON_SERIALIZABLE_VALUE} from '../constants.ts';
-
+import {
+  BsonSerializableDouble,
+  TO_BSON_SERIALIZABLE_VALUE,
+} from "../constants.ts";
 
 export class Double {
   readonly value: number;
@@ -17,6 +19,6 @@ export class Double {
   }
 
   [TO_BSON_SERIALIZABLE_VALUE](): BsonSerializableDouble {
-    return ['double', this.value];
+    return ["double", this.value];
   }
 }

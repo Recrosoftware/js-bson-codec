@@ -1,4 +1,10 @@
-export function read(buffer: Uint8Array, offset: number, isLE: boolean, mLen: number, nBytes: number): number {
+export function read(
+  buffer: Uint8Array,
+  offset: number,
+  isLE: boolean,
+  mLen: number,
+  nBytes: number,
+): number {
   let e: number;
   let m: number;
   const eLen = (nBytes * 8) - mLen - 1;
@@ -12,7 +18,7 @@ export function read(buffer: Uint8Array, offset: number, isLE: boolean, mLen: nu
   i += d;
 
   e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
+  s >>= -nBits;
   nBits += eLen;
   while (nBits > 0) {
     e = (e * 256) + buffer[offset + i];
@@ -21,7 +27,7 @@ export function read(buffer: Uint8Array, offset: number, isLE: boolean, mLen: nu
   }
 
   m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
+  e >>= -nBits;
   nBits += mLen;
   while (nBits > 0) {
     m = (m * 256) + buffer[offset + i];
@@ -40,7 +46,14 @@ export function read(buffer: Uint8Array, offset: number, isLE: boolean, mLen: nu
   return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
 }
 
-export function write(buffer: Uint8Array, value: number, offset: number, isLE: boolean, mLen: number, nBytes: number): void {
+export function write(
+  buffer: Uint8Array,
+  value: number,
+  offset: number,
+  isLE: boolean,
+  mLen: number,
+  nBytes: number,
+): void {
   let e: number;
   let m: number;
   let c: number;
