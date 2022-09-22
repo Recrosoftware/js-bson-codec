@@ -1,5 +1,4 @@
-import {BinarySequence} from './utils/binary-sequence.ts';
-
+import { BinarySequence } from "./utils/binary-sequence.ts";
 
 export const TYPE_DOUBLE = 0x01;
 export const TYPE_STRING = 0x02;
@@ -89,61 +88,61 @@ export type BsonObject =
   | Map<string, unknown>;
 export type BsonArray = ReadonlyArray<unknown>;
 
-export type BsonSerializableArray = readonly ['array', BsonArray];
+export type BsonSerializableArray = readonly ["array", BsonArray];
 export type BsonSerializableBinary = readonly [
-  'binary',
+  "binary",
   BsonBinarySubtype,
   BinarySequence,
 ];
-export type BsonSerializableBoolean = readonly ['boolean', boolean];
-export type BsonSerializableCode = readonly ['code', string];
+export type BsonSerializableBoolean = readonly ["boolean", boolean];
+export type BsonSerializableCode = readonly ["code", string];
 export type BsonSerializableCodeWithScope = readonly [
-  'code-with-scope',
+  "code-with-scope",
   string,
   BsonObject,
 ];
 export type BsonSerializableDbPointer = readonly [
-  'db-pointer',
+  "db-pointer",
   string,
   BinarySequence,
 ];
 export type BsonSerializableDecimal128 = readonly [
-  'decimal128',
-    number | bigint | BinarySequence,
+  "decimal128",
+  number | bigint | BinarySequence,
 ];
 export type BsonSerializableDouble = readonly [
-  'double',
-    number | bigint | BinarySequence,
+  "double",
+  number | bigint | BinarySequence,
 ];
 export type BsonSerializableInt32 = readonly [
-  'int32',
-    number | bigint | BinarySequence,
+  "int32",
+  number | bigint | BinarySequence,
 ];
 export type BsonSerializableInt64 = readonly [
-  'int64',
-    number | bigint | BinarySequence,
+  "int64",
+  number | bigint | BinarySequence,
 ];
-export type BsonSerializableMaxKey = readonly ['max-key'];
-export type BsonSerializableMinKey = readonly ['min-key'];
-export type BsonSerializableNull = readonly ['null'];
-export type BsonSerializableObject = readonly ['object', BsonObject];
-export type BsonSerializableObjectId = readonly ['object-id', BinarySequence];
+export type BsonSerializableMaxKey = readonly ["max-key"];
+export type BsonSerializableMinKey = readonly ["min-key"];
+export type BsonSerializableNull = readonly ["null"];
+export type BsonSerializableObject = readonly ["object", BsonObject];
+export type BsonSerializableObjectId = readonly ["object-id", BinarySequence];
 export type BsonSerializableRegularExpression =
-  | readonly [type: 'regular-expression', regularExpression: RegExp]
-  | readonly [type: 'regular-expression', pattern: string, flags: string];
-export type BsonSerializableString = readonly ['string', string];
-export type BsonSerializableSymbol = readonly ['symbol', string];
+  | readonly [type: "regular-expression", regularExpression: RegExp]
+  | readonly [type: "regular-expression", pattern: string, flags: string];
+export type BsonSerializableString = readonly ["string", string];
+export type BsonSerializableSymbol = readonly ["symbol", string];
 export type BsonSerializableTimestamp = readonly [
-  'timestamp',
-    number | bigint | BinarySequence,
+  "timestamp",
+  number | bigint | BinarySequence,
 ];
-export type BsonSerializableUndefined = readonly ['undefined'];
+export type BsonSerializableUndefined = readonly ["undefined"];
 export type BsonSerializableUtcDatetime = readonly [
-  'utc-datetime',
-    number | bigint | BinarySequence,
+  "utc-datetime",
+  number | bigint | BinarySequence,
 ];
 
-export const TO_BSON_SERIALIZABLE_VALUE = Symbol('toBson');
+export const TO_BSON_SERIALIZABLE_VALUE = Symbol("toBson");
 
 export interface BsonSerializableValueProvider {
   [TO_BSON_SERIALIZABLE_VALUE]: () => BsonSerializableValue | undefined;

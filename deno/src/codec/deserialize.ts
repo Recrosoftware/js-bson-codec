@@ -165,6 +165,7 @@ export function deserializeEntries(
 
     entries.push([key, value]);
   }
+
   if (reader.position !== (finalPosition - 1)) throw new Error(""); // TODO
 
   const [zero] = readUint8(reader);

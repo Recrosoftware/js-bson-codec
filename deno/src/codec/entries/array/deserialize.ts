@@ -10,7 +10,7 @@ export function deserialize(
 ): unknown[] {
   const [type] = readTypeAndKey(reader);
 
-  if (type !== constants.TYPE_EMBEDDED_OBJECT) throw new Error(""); // TODO
+  if (type !== constants.TYPE_EMBEDDED_ARRAY) throw new Error(""); // TODO
 
   const [length] = readInt32(reader, true);
   if (length < 0) throw new Error(""); // TODO
@@ -22,7 +22,7 @@ export function deserialize(
     const expectedKey = String(i);
     const [key, value] = entries[i];
 
-    if (key !== expectedKey) throw new Error("");
+    if (key !== expectedKey) throw new Error(""); // TODO
     output.push(value);
   }
   return output;

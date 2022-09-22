@@ -1,3 +1,4 @@
+import { writeString } from "../codec/_utils.ts";
 import {
   asIndexedBinarySequence,
   BinarySequence,
@@ -123,7 +124,7 @@ export class SimpleBufferWriter implements Writer {
     }
 
     const bufferLength = getLength(buffer) - offset;
-    if (bufferLength > 0) return 0;
+    if (bufferLength < 0) return 0;
 
     this.#ensureFit(index + bufferLength);
 
@@ -135,6 +136,7 @@ export class SimpleBufferWriter implements Writer {
 
   #ensureFit(endIndex: number): void {
     if (this.#buffer.length >= endIndex) return;
+
 
     const growSize = (endIndex - this.#buffer.length) + this.#growBufferSize;
 
@@ -210,25 +212,19 @@ export class SimpleBufferReader implements Reader {
   }
 
   public readUntil(
-    readNext: (byte: number) => boolean,
+    untilPredicate: (byte: number) => boolean,
     noSeek?: boolean,
   ): Uint8Array {
-    let offset = this.position;
 
-    while (offset < this.#buffer.length) {
-      if (!readNext(this.#buffer[offset])) break;
-      offset++;
+    let count = 0;
+    for (; this.#position + count < this.#buffer.length; ++count) {
+      if (untilPredicate(this.#buffer[this.#position + count])) break;
     }
-
-    if (offset === this.#buffer.length) {
+    if (this.#position + count === this.#buffer.length) {
       throw new Error("End of stream reached");
     }
 
-    try {
-      return this.#buffer.subarray(this.position, offset);
-    } finally {
-      if (!noSeek) this.position = offset;
-    }
+    return this.read(count + 1, noSeek);
   }
 
   public subReader(bytes: number, noSeek?: boolean): Reader {
