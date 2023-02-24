@@ -64,7 +64,7 @@ export type DeserializeOptions = {
   };
   deprecated?: {
     undefined?: DeserializeDeprecatedAction;
-    dbPointer?: DeserializeDeprecatedAction;
+    dbPointer?: DeserializeDeprecatedAction | "convert-to-db-ref";
     symbol?: DeserializeDeprecatedAction;
     codeWithScope?: DeserializeDeprecatedAction;
   };
